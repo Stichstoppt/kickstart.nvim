@@ -175,6 +175,9 @@ do
   -- [[ Basic Keymaps ]]
   --  See `:help vim.keymap.set()`
 
+  -- remap going fileview to <leader>pv
+  vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+
   -- Clear highlights on search when pressing <Esc> in normal mode
   --  See `:help hlsearch`
   vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -211,22 +214,22 @@ do
   --
   -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
   -- or just use <C-\><C-n> to exit terminal mode
-  vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+  -- vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
-  -- TIP: Disable arrow keys in normal mode
-  -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
-  -- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
-  -- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
-  -- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+  -- Disable arrow keys in normal mode
+  vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+  vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+  vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+  vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
   -- Keybinds to make split navigation easier.
   --  Use CTRL+<hjkl> to switch between windows
   --
   --  See `:help wincmd` for a list of all window commands
-  vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-  vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-  vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-  vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+  --vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+  --vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+  --vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+  --vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
   -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
   -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -990,3 +993,28 @@ end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+-- ============================================================
+-- SECTION 10: HARPOON
+-- navigation between files in nvim
+-- ============================================================
+do
+  vim.pack.add { { src = gh 'ThePrimeagen/harpoon', version = 'harpoon2', } }
+  local harpoon = require("harpoon")
+
+  -- REQUIRED
+  harpoon:setup()
+  -- REQUIRED
+
+  vim.keymap.set("n", "<M-n>", function() harpoon:list():add() end)
+  vim.keymap.set("n", "<M-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+  vim.keymap.set("n", "<M-g>", function() harpoon:list():select(1) end)
+  vim.keymap.set("n", "<M-f>", function() harpoon:list():select(2) end)
+  vim.keymap.set("n", "<M-d>", function() harpoon:list():select(3) end)
+  vim.keymap.set("n", "<M-s>", function() harpoon:list():select(4) end)
+
+  -- Toggle previous & next buffers stored within Harpoon list
+  vim.keymap.set("n", "<M-S-P>", function() harpoon:list():prev() end)
+  vim.keymap.set("n", "<M-S-N>", function() harpoon:list():next() end)
+end

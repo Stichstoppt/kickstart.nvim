@@ -383,24 +383,27 @@ do
   -- change the command under that to load whatever the name of that colorscheme is.
   --
   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-  -- KEIN vim.pack.add nötig, da retrobox schon in Neovim eingebaut ist!
+  vim.pack.add { gh 'rose-pine/neovim' }
 
-  vim.api.nvim_create_autocmd("ColorScheme", {
-    pattern = "retrobox",
-    callback = function()
-      local hl_groups = { "Normal", "NormalNC", "LineNr", "SignColumn", "EndOfBuffer" }
-      for _, group in ipairs(hl_groups) do
-        vim.api.nvim_set_hl(0, group, { bg = "none", ctermbg = "none" })
-      end
-      vim.api.nvim_set_hl(0, "Comment", {
-        fg = "#d79921",
-        italic = false,
-        bold = false
-      })
-    end,
+  require('rose-pine').setup({
+    styles = {
+      italic = false,
+      transparency = true,
+    },
+    -- Crimson Pine Farb-Overrides
+    palette = {
+      main = {
+        love = '#ff2e63',
+        rose = '#ff4a73',
+        pine = '#ff758f',
+        foam = '#ff9ebb',
+        iris = '#ff5e97',
+        gold = '#ffcc00',
+      },
+    }
   })
 
-  vim.cmd.colorscheme 'retrobox'
+  vim.cmd.colorscheme 'rose-pine'
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
@@ -741,9 +744,7 @@ do
 
     ruff = {
       on_attach = function(client, bufnr)
-        if client.name == 'ruff' then
-          client.server_capabilities.hoverProvider = false
-        end
+        if client.name == 'ruff' then client.server_capabilities.hoverProvider = false end
       end,
     },
   }

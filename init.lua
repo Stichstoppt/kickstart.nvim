@@ -386,27 +386,30 @@ do
   -- change the command under that to load whatever the name of that colorscheme is.
   --
   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-  vim.pack.add { gh 'rose-pine/neovim' }
+  vim.pack.add { gh 'sainnhe/sonokai' }
 
-  require('rose-pine').setup({
-    styles = {
-      italic = false,
-      transparency = true,
-    },
-    -- Crimson Pine Farb-Overrides
-    palette = {
-      main = {
-        love = '#ff2e63',
-        rose = '#ff4a73',
-        pine = '#ff758f',
-        foam = '#ff9ebb',
-        iris = '#ff5e97',
-        gold = '#ffcc00',
-      },
-    }
+  vim.g.sonokai_enable_italic = 0
+  vim.g.sonokai_transparent_background = 1
+
+  vim.api.nvim_create_autocmd("ColorScheme", {
+    pattern = "sonokai",
+    callback = function()
+      vim.api.nvim_set_hl(0, 'Comment', {
+        fg = '#e6b9c0',
+        italic = false
+      })
+    end,
   })
+-- this code won't work because sonokai is written in vimscript
+-- however, for lua written themes require('...').setup is the way
+--  require('sonokai').setup({
+--    styles = {
+--      italic = false,
+--      transparency = true,
+--    },
+--  })
 
-  vim.cmd.colorscheme 'rose-pine'
+  vim.cmd.colorscheme 'sonokai'
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
@@ -439,11 +442,9 @@ do
   require('mini.surround').setup()
 
   -- Simple and easy statusline.
-  --  You could remove this setup call if you don't like it,
-  --  and try some other statusline plugin
   local statusline = require 'mini.statusline'
   -- Set `use_icons` to true if you have a Nerd Font
-  statusline.setup { use_icons = vim.g.have_nerd_font }
+  -- statusline.setup { use_icons = vim.g.have_nerd_font }
 
   -- You can configure sections in the statusline by overriding their
   -- default behavior. For example, here we set the section for
@@ -451,7 +452,6 @@ do
   ---@diagnostic disable-next-line: duplicate-set-field
   statusline.section_location = function() return '%2l:%-2v' end
 
-  -- ... and there is more!
   --  Check out: https://github.com/nvim-mini/mini.nvim
 end
 
@@ -700,7 +700,24 @@ do
   local servers = {
     -- clangd = {},
     -- gopls = {},
-    pyright = {},
+    pyright = {
+      on_init = function(client)
+        -- Search upward for a .venv folder starting from the project root
+        local venv_path = vim.fs.find({ '.venv' }, {
+          upward = true,
+          type = 'directory',
+          path = client.workspace_folders[1].name
+        })[1]
+
+        if venv_path then
+          -- Inject the uv environment's python interpreter into the LSP settings
+          client.config.settings.python = {
+            pythonPath = venv_path .. '/bin/python'
+          }
+          client:notify('workspace/didChangeConfiguration', { settings = client.config.settings })
+        end
+      end,
+    },
     -- rust_analyzer = {},
     --
     -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -995,7 +1012,7 @@ end
 -- vim: ts=2 sts=2 sw=2 et
 
 -- ============================================================
--- SECTION 10: HARPOON
+-- HARPOON
 -- navigation between files in nvim
 -- ============================================================
 do
@@ -1018,3 +1035,10 @@ do
   vim.keymap.set("n", "<M-S-P>", function() harpoon:list():prev() end)
   vim.keymap.set("n", "<M-S-N>", function() harpoon:list():next() end)
 end
+
+-- ============================================================
+-- Undo tree
+-- ============================================================
+--do
+--  vim.pack.add { { src = gh 'ThePrimeagen/harpoon', version = 'harpoon2', } }
+--end

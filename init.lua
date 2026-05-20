@@ -348,7 +348,7 @@ do
   --
   -- Here we only install `nvim-web-devicons` (which adds pretty icons) if we have a Nerd Font,
   -- since otherwise the icons won't display properly.
-  if vim.g.have_nerd_font then vim.pack.add { gh 'nvim-tree/nvim-web-devicons' } end
+  -- if vim.g.have_nerd_font then vim.pack.add { gh 'nvim-tree/nvim-web-devicons' } end
 
   -- Here is a more advanced configuration example that passes options to `gitsigns.nvim`
   --
@@ -441,18 +441,48 @@ do
   -- - sr)'  - [S]urround [R]eplace [)] [']
   require('mini.surround').setup()
 
-  -- Simple and easy statusline.
-  local statusline = require 'mini.statusline'
-  -- Set `use_icons` to true if you have a Nerd Font
-  -- statusline.setup { use_icons = vim.g.have_nerd_font }
+  -- Statusline
+  -- see: https://github.com/nvim-mini/mini.nvim
+  -- local statusline = require 'mini.statusline'
+  --require('mini.statusline').setup({
+    --content = {
+      --active = function()
+        --local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 999 })
+        --local filename      = MiniStatusline.section_filename({ trunc_width = 999 })
+        --local fileformat    = vim.bo.fileformat:upper() -- 'UNIX', 'DOS', etc.
+--
+        --local percentage    = '%p%%' 
+--
+        --return MiniStatusline.combine_groups({
+          ---- Left side: Mode (with dynamic colors) and File Name
+          --{ hl = mode_hl, strings = { mode } },
+          --{ hl = 'MiniStatuslineFilename', strings = { filename } },
+--
+          --'%=', 
+--
+          ---- Right side: File Format and Percentage
+          --{ hl = mode_hl, strings = { percentage } },
+        --})
+      --end
+    --}
+  --})
 
-  -- You can configure sections in the statusline by overriding their
-  -- default behavior. For example, here we set the section for
-  -- cursor location to LINE:COLUMN
-  ---@diagnostic disable-next-line: duplicate-set-field
-  statusline.section_location = function() return '%2l:%-2v' end
+  -- Statusline
+  -- see: https://github.com/nvim-lualine/lualine.nvim
+  vim.pack.add { gh 'nvim-tree/nvim-web-devicons' }
+  vim.pack.add { gh 'nvim-lualine/lualine.nvim' }
 
-  --  Check out: https://github.com/nvim-mini/mini.nvim
+  local statusline = require 'lualine'
+  local statusline_theme = require 'lualine.themes.sonokai'
+  
+  statusline.setup({
+    options = {
+      theme = statusline_theme,
+    }
+  })
+
+  vim.opt.showmode = false
+
 end
 
 -- ============================================================

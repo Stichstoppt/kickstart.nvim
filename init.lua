@@ -176,11 +176,20 @@ do
   --  See `:help vim.keymap.set()`
 
   -- remap going fileview to <leader>pv
-  vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+  vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
 
   -- Clear highlights on search when pressing <Esc> in normal mode
   --  See `:help hlsearch`
   vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+
+  -- Center when navigating with <C-d>, <C-u> and /
+  vim.keymap.set('n', '<C-d>', '<C-d>zz')
+  vim.keymap.set('n', '<C-u>', '<C-u>zz')
+  vim.keymap.set('n', 'n', 'nzz')
+  vim.keymap.set('n', 'N', 'Nzz')
+
+  -- paste without yanking selected text
+  vim.keymap.set('n', '<leader>p', '"_dp')
 
   -- Diagnostic Config & Keymaps
   --  See `:help vim.diagnostic.Opts`
@@ -391,23 +400,23 @@ do
   vim.g.sonokai_enable_italic = 0
   vim.g.sonokai_transparent_background = 1
 
-  vim.api.nvim_create_autocmd("ColorScheme", {
-    pattern = "sonokai",
+  vim.api.nvim_create_autocmd('ColorScheme', {
+    pattern = 'sonokai',
     callback = function()
       vim.api.nvim_set_hl(0, 'Comment', {
         fg = '#e6b9c0',
-        italic = false
+        italic = false,
       })
     end,
   })
--- this code won't work because sonokai is written in vimscript
--- however, for lua written themes require('...').setup is the way
---  require('sonokai').setup({
---    styles = {
---      italic = false,
---      transparency = true,
---    },
---  })
+  -- this code won't work because sonokai is written in vimscript
+  -- however, for lua written themes require('...').setup is the way
+  --  require('sonokai').setup({
+  --    styles = {
+  --      italic = false,
+  --      transparency = true,
+  --    },
+  --  })
 
   vim.cmd.colorscheme 'sonokai'
 
@@ -442,47 +451,20 @@ do
   require('mini.surround').setup()
 
   -- Statusline
-  -- see: https://github.com/nvim-mini/mini.nvim
-  -- local statusline = require 'mini.statusline'
-  --require('mini.statusline').setup({
-    --content = {
-      --active = function()
-        --local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 999 })
-        --local filename      = MiniStatusline.section_filename({ trunc_width = 999 })
-        --local fileformat    = vim.bo.fileformat:upper() -- 'UNIX', 'DOS', etc.
---
-        --local percentage    = '%p%%' 
---
-        --return MiniStatusline.combine_groups({
-          ---- Left side: Mode (with dynamic colors) and File Name
-          --{ hl = mode_hl, strings = { mode } },
-          --{ hl = 'MiniStatuslineFilename', strings = { filename } },
---
-          --'%=', 
---
-          ---- Right side: File Format and Percentage
-          --{ hl = mode_hl, strings = { percentage } },
-        --})
-      --end
-    --}
-  --})
-
-  -- Statusline
   -- see: https://github.com/nvim-lualine/lualine.nvim
   vim.pack.add { gh 'nvim-tree/nvim-web-devicons' }
   vim.pack.add { gh 'nvim-lualine/lualine.nvim' }
 
   local statusline = require 'lualine'
   local statusline_theme = require 'lualine.themes.sonokai'
-  
-  statusline.setup({
+
+  statusline.setup {
     options = {
       theme = statusline_theme,
-    }
-  })
+    },
+  }
 
   vim.opt.showmode = false
-
 end
 
 -- ============================================================
@@ -728,33 +710,24 @@ do
   --  See `:help lsp-config` for information about keys and how to configure
   ---@type table<string, vim.lsp.Config>
   local servers = {
-    -- clangd = {},
-    -- gopls = {},
     pyright = {
       on_init = function(client)
         -- Search upward for a .venv folder starting from the project root
         local venv_path = vim.fs.find({ '.venv' }, {
           upward = true,
           type = 'directory',
-          path = client.workspace_folders[1].name
+          path = client.workspace_folders[1].name,
         })[1]
 
         if venv_path then
           -- Inject the uv environment's python interpreter into the LSP settings
           client.config.settings.python = {
-            pythonPath = venv_path .. '/bin/python'
+            pythonPath = venv_path .. '/bin/python',
           }
           client:notify('workspace/didChangeConfiguration', { settings = client.config.settings })
         end
       end,
     },
-    -- rust_analyzer = {},
-    --
-    -- Some languages (like typescript) have entire language plugins that can be useful:
-    --    https://github.com/pmizio/typescript-tools.nvim
-    --
-    -- But for many setups, the LSP (`ts_ls`) will work just fine
-    -- ts_ls = {},
 
     stylua = {}, -- Used to format Lua code
 
@@ -800,11 +773,20 @@ do
   }
 
   vim.pack.add {
+    --    {
+    --      src = 'https://github.com/JavaHello/spring-boot.nvim',
+    --          version = '218c0c26c14d99feca778e4d13f5ec3e8b1b60f0',
+    --    },
+    --    'https://github.com/MunifTanjim/nui.nvim',
+    --    'https://github.com/mfussenegger/nvim-dap',
+    --    'https://github.com/nvim-java/nvim-java',
     gh 'neovim/nvim-lspconfig',
     gh 'mason-org/mason.nvim',
     gh 'mason-org/mason-lspconfig.nvim',
     gh 'WhoIsSethDaniel/mason-tool-installer.nvim',
   }
+
+  --require('java').setup()
 
   -- Automatically install LSPs and related tools to stdpath for Neovim
   require('mason').setup {}
@@ -827,6 +809,9 @@ do
     vim.lsp.config(name, server)
     vim.lsp.enable(name)
   end
+
+  --java
+  --require('lspconfig').jdtls.setup({})
 end
 
 -- ============================================================
@@ -841,8 +826,9 @@ do
     format_on_save = function(bufnr)
       -- You can specify filetypes to autoformat on save here:
       local enabled_filetypes = {
-        -- lua = true,
-        -- python = true,
+        lua = true,
+        python = true,
+        --java = true
       }
       if enabled_filetypes[vim.bo[bufnr].filetype] then
         return { timeout_ms = 500 }
@@ -1046,24 +1032,24 @@ end
 -- navigation between files in nvim
 -- ============================================================
 do
-  vim.pack.add { { src = gh 'ThePrimeagen/harpoon', version = 'harpoon2', } }
-  local harpoon = require("harpoon")
+  vim.pack.add { { src = gh 'ThePrimeagen/harpoon', version = 'harpoon2' } }
+  local harpoon = require 'harpoon'
 
   -- REQUIRED
   harpoon:setup()
   -- REQUIRED
 
-  vim.keymap.set("n", "<M-n>", function() harpoon:list():add() end)
-  vim.keymap.set("n", "<M-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+  vim.keymap.set('n', '<M-n>', function() harpoon:list():add() end)
+  vim.keymap.set('n', '<M-e>', function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 
-  vim.keymap.set("n", "<M-g>", function() harpoon:list():select(1) end)
-  vim.keymap.set("n", "<M-f>", function() harpoon:list():select(2) end)
-  vim.keymap.set("n", "<M-d>", function() harpoon:list():select(3) end)
-  vim.keymap.set("n", "<M-s>", function() harpoon:list():select(4) end)
+  vim.keymap.set('n', '<M-g>', function() harpoon:list():select(1) end)
+  vim.keymap.set('n', '<M-f>', function() harpoon:list():select(2) end)
+  vim.keymap.set('n', '<M-d>', function() harpoon:list():select(3) end)
+  vim.keymap.set('n', '<M-s>', function() harpoon:list():select(4) end)
 
   -- Toggle previous & next buffers stored within Harpoon list
-  vim.keymap.set("n", "<M-S-P>", function() harpoon:list():prev() end)
-  vim.keymap.set("n", "<M-S-N>", function() harpoon:list():next() end)
+  vim.keymap.set('n', '<M-S-P>', function() harpoon:list():prev() end)
+  vim.keymap.set('n', '<M-S-N>', function() harpoon:list():next() end)
 end
 
 -- ============================================================

@@ -89,6 +89,8 @@ P.S. You can delete this when you're done too. It's your config now! :)
 -- Core Neovim settings, leaders, options, basic keymaps, basic autocmds
 -- ============================================================
 do
+  require 'utils'
+
   -- Enable faster startup by caching compiled Lua modules
   vim.loader.enable()
 
@@ -333,7 +335,7 @@ end
 ---function to have less repetition in the following sections.
 ---@param repo string
 ---@return string
-local function gh(repo) return 'https://github.com/' .. repo end
+-- local function gh(repo) return 'https://github.com/' .. repo end
 
 -- ============================================================
 -- SECTION 3: UI / CORE UX PLUGINS
@@ -1015,7 +1017,7 @@ do
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug'
+  require 'kickstart.plugins.debug'
   -- require 'kickstart.plugins.indent_line'
   -- require 'kickstart.plugins.lint'
   -- require 'kickstart.plugins.autopairs'
@@ -1025,40 +1027,8 @@ do
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- require 'custom.plugins'
+  require 'custom.plugins'
 end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
-
--- ============================================================
--- HARPOON
--- navigation between files in nvim
--- ============================================================
-do
-  vim.pack.add { { src = gh 'ThePrimeagen/harpoon', version = 'harpoon2' } }
-  local harpoon = require 'harpoon'
-
-  -- REQUIRED
-  harpoon:setup()
-  -- REQUIRED
-
-  vim.keymap.set('n', '<M-n>', function() harpoon:list():add() end)
-  vim.keymap.set('n', '<M-e>', function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
-
-  vim.keymap.set('n', '<M-g>', function() harpoon:list():select(1) end)
-  vim.keymap.set('n', '<M-f>', function() harpoon:list():select(2) end)
-  vim.keymap.set('n', '<M-d>', function() harpoon:list():select(3) end)
-  vim.keymap.set('n', '<M-s>', function() harpoon:list():select(4) end)
-
-  -- Toggle previous & next buffers stored within Harpoon list
-  vim.keymap.set('n', '<M-S-P>', function() harpoon:list():prev() end)
-  vim.keymap.set('n', '<M-S-N>', function() harpoon:list():next() end)
-end
-
--- ============================================================
--- Undo tree
--- ============================================================
---do
---  vim.pack.add { { src = gh 'ThePrimeagen/harpoon', version = 'harpoon2', } }
---end

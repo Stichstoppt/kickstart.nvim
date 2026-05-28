@@ -547,6 +547,30 @@ do
   vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earch [C]ommands' })
   vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
+  vim.keymap.set('n', '<leader>sd', function()
+    local actions = require 'telescope.actions'
+    local action_state = require 'telescope.actions.state'
+
+    builtin.find_files {
+      prompt_title = 'Search Directories',
+      -- Finds ONLY directories, includes hidden ones, ignores .git
+      find_command = { 'fd', '--type', 'd', '--hidden', '--exclude', '.git' },
+
+      attach_mappings = function(prompt_bufnr, _)
+        actions.select_default:replace(function()
+          local selection = action_state.get_selected_entry()
+          actions.close(prompt_bufnr)
+
+          if selection then
+            -- This handles both: opens Oil from a file, or updates Oil if already inside it
+            require('oil').open(selection.value)
+          end
+        end)
+        return true
+      end,
+    }
+  end, { desc = '[S]earch [D]irectories' })
+
   -- Add Telescope-based LSP pickers when an LSP attaches to a buffer.
   -- If you later switch picker plugins, this is where to update these mappings.
   vim.api.nvim_create_autocmd('LspAttach', {

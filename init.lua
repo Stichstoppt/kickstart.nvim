@@ -178,7 +178,7 @@ do
   --  See `:help vim.keymap.set()`
 
   -- remap going fileview to <leader>pv
-  vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
+  -- vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
 
   -- Clear highlights on search when pressing <Esc> in normal mode
   --  See `:help hlsearch`

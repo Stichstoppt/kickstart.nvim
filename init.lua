@@ -177,9 +177,6 @@ do
   -- [[ Basic Keymaps ]]
   --  See `:help vim.keymap.set()`
 
-  -- remap going fileview to <leader>pv
-  -- vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
-
   -- Clear highlights on search when pressing <Esc> in normal mode
   --  See `:help hlsearch`
   vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -740,6 +737,8 @@ do
   --  See `:help lsp-config` for information about keys and how to configure
   ---@type table<string, vim.lsp.Config>
   local servers = {
+    ts_ls = {},
+
     pyright = {
       on_init = function(client)
         -- Search upward for a .venv folder starting from the project root

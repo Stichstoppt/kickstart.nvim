@@ -592,6 +592,9 @@ do
       -- To jump back, press <C-t>.
       vim.keymap.set('n', 'grd', builtin.lsp_definitions, { buffer = buf, desc = '[G]oto [D]efinition' })
 
+      -- Press 'grm' in Normal mode to show the error diagnostic under the cursor
+      vim.keymap.set('n', 'gre', vim.diagnostic.open_float, { desc = '[G]oto [E]rror message' })
+
       -- Fuzzy find all the symbols in your current document.
       -- Symbols are things like variables, functions, types, etc.
       vim.keymap.set('n', 'gO', builtin.lsp_document_symbols, { buffer = buf, desc = 'Open Document Symbols' })

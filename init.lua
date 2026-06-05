@@ -193,11 +193,11 @@ do
   vim.keymap.set('n', 'N', 'Nzz')
 
   -- paste without yanking selected text
-  vim.keymap.set('v', '<leader>p', '"_dp')
+  vim.keymap.set('v', '<leader>p', '"_dp', { desc = '[paste] without overwriting register' })
 
-  -- add line without switching to inser mode
-  vim.keymap.set('n', '<leader>o', 'o<C-c>')
-  vim.keymap.set('n', '<leader>O', 'O<C-c>')
+  -- add line without switching to insert mode
+  vim.keymap.set('n', '<leader>a', 'o<C-c>', { desc = '[a]ppend line staying in normal mode' })
+  vim.keymap.set('n', '<leader>i', 'O<C-c>', { desc = '[i]nsert line staying in normal mode' })
 
   -- Diagnostic Config & Keymaps
   --  See `:help vim.diagnostic.Opts`

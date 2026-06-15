@@ -854,6 +854,7 @@ do
   vim.pack.add { gh 'stevearc/conform.nvim' }
   require('conform').setup {
     notify_on_error = false,
+
     format_on_save = function(bufnr)
       -- You can specify filetypes to autoformat on save here:
       local enabled_filetypes = {
@@ -867,14 +868,30 @@ do
         return nil
       end
     end,
+
+    formatters = {
+      black = {
+        command = function(_, ctx)
+          local venv = vim.fs.find({ '.venv' }, {
+            upward = true,
+            type = 'directory',
+            path = ctx.dirname,
+          })[1]
+
+          return venv and (venv .. '/bin/black') or 'black'
+        end,
+      },
+    },
+
     default_format_opts = {
       lsp_format = 'fallback', -- Use external formatters if configured below, otherwise use LSP formatting. Set to `false` to disable LSP formatting entirely.
     },
+
     -- You can also specify external formatters in here.
     formatters_by_ft = {
       -- rust = { 'rustfmt' },
       -- Conform can also run multiple formatters sequentially
-      -- python = { "isort", "black" },
+      python = { 'black' },
       --
       -- You can use 'stop_after_first' to run the first available formatter from the list
       -- javascript = { "prettierd", "prettier", stop_after_first = true },

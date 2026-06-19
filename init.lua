@@ -403,6 +403,8 @@ do
   -- change the command under that to load whatever the name of that colorscheme is.
   --
   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+
+  vim.opt.termguicolors = true
   vim.pack.add { gh 'sainnhe/sonokai' }
 
   vim.g.sonokai_enable_italic = 0

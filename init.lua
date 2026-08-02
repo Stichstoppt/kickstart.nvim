@@ -747,7 +747,7 @@ do
   --  See `:help lsp-config` for information about keys and how to configure
   ---@type table<string, vim.lsp.Config>
   local servers = {
-    ts_ls = {},
+    ts_ls = {}, -- TypeScript Language Server
 
     pyright = {
       on_init = function(client)
@@ -767,6 +767,8 @@ do
         end
       end,
     },
+
+    zls = {}, -- Zig Language Server
 
     stylua = {}, -- Used to format Lua code
 

@@ -902,7 +902,15 @@ do
     },
   }
 
-  vim.keymap.set({ 'n', 'v' }, '<leader>f', function() require('conform').format { async = true } end, { desc = '[F]ormat buffer' })
+  vim.pack.add { gh 'dhruvasagar/vim-table-mode' }
+
+  vim.keymap.set({ 'n', 'v' }, '<leader>f', function()
+    if vim.bo.filetype == 'markdown' then
+      vim.cmd 'TableModeRealign'
+    else
+      require('conform').format { async = true }
+    end
+  end, { desc = '[F]ormat buffer' })
 end
 
 -- ============================================================
